@@ -129,17 +129,6 @@ def detect_fishing_bar(frame, template_empty, template_filled, template_indicato
     target_x = roi_x_start + x
     target_width = template_empty.shape[1]
 
-    debug_image = roi.copy()
-
-    cv2.rectangle(debug_image, (max_loc_indicator[0], max_loc_indicator[1]),
-                  (max_loc_indicator[0] + template_indicator.shape[1],
-                   max_loc_indicator[1] + template_indicator.shape[0]),
-                  (0, 255, 0), 2)
-
-    cv2.rectangle(debug_image, (x, y), (x + target_width, y + template_empty.shape[0]), (0, 215, 255), 2)
-
-    cv2.imshow("DEBUG", debug_image)
-
     return {
         'indicator_x': indicator_x,
         'indicator_width': indicator_width,
@@ -187,28 +176,6 @@ def manage_fishing_minigame(frame):
     else:
         print(f"✅ В центре (offset={offset:.2f}) — ничего не делаем")
 
-    debug_bar = np.zeros((50, total_bar_width, 3), dtype=np.uint8)
-
-    # Рисуем шкалу
-    cv2.rectangle(debug_bar, (0, 0), (total_bar_width, 50), (50, 50, 50), -1)
-
-    relative_target_start = target_start - bar_data['roi_x_start']
-    relative_target_width = bar_data['target_width']
-    cv2.rectangle(debug_bar,
-                  (relative_target_start, 0),
-                  (relative_target_start + relative_target_width, 50),
-                  (0, 255, 0), -1)
-
-    relative_indicator_start = indicator_start - bar_data['roi_x_start']
-    relative_indicator_width = bar_data['indicator_width']
-    cv2.rectangle(debug_bar,
-                  (relative_indicator_start, 0),
-                  (relative_indicator_start + relative_indicator_width, 50),
-                  (0, 165, 255), -1)
-
-    cv2.imshow("Визуализация шкалы", debug_bar)
-
-
 def detect_completion(frame):
     height, width = frame.shape[:2]
 
@@ -227,7 +194,7 @@ def detect_completion(frame):
     return white_pixels > threshold
 
 keyboard.add_hotkey("F6", toggle_fishing)
-cv2.namedWindow("(Live)")
+# cv2.namedWindow("(Live)")
 
 while True:
     current_frame = capture_window("Genshin Impact")
@@ -249,7 +216,7 @@ while True:
                 restart_fishing()
                 time.sleep(2)
 
-    cv2.imshow("(Live)", current_frame)
+    # cv2.imshow("(Live)", current_frame)
 
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
